@@ -6,31 +6,31 @@ import { InferType, number, object, string } from "yup";
 
 interface ITopFilm {
   label: string;
-  year: number;
+  year: string;
 }
 
 const schema = object({
   label: string().required("Require Field"),
-  year: number().required(),
+  year: string().required(),
 }).required();
 
 type FormData = InferType<typeof schema>;
 
 function App() {
   const top100Films: ITopFilm[] = [
-    { label: "The Shawshank Redemption", year: 1994 },
-    { label: "The Godfather", year: 1972 },
-    { label: "The Godfather: Part II", year: 1974 },
-    { label: "The Dark Knight", year: 2008 },
-    { label: "12 Angry Men", year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: "Pulp Fiction", year: 1994 },
+    { label: "The Shawshank Redemption", year: "1994" },
+    { label: "The Godfather", year: "1972" },
+    { label: "The Godfather: Part II", year: "1974" },
+    { label: "The Dark Knight", year: "2008" },
+    { label: "12 Angry Men", year: "1957" },
+    { label: "Schindler's List", year: "1993" },
+    { label: "Pulp Fiction", year: "1994" },
     {
       label: "The Lord of the Rings: The Return of the King",
-      year: 2003,
+      year: "2003",
     },
-    { label: "The Good, the Bad and the Ugly", year: 1966 },
-    { label: "Fight Club", year: 1999 },
+    { label: "The Good, the Bad and the Ugly", year: "1966" },
+    { label: "Fight Club", year: "1999" },
   ];
 
   const {
@@ -41,6 +41,10 @@ function App() {
   } = useForm<FormData>({
     mode: "onChange",
     resolver: yupResolver(schema),
+    defaultValues: {
+      label: "",
+      year: "",
+    },
   });
 
   const onSubmit = (data: any) => {
@@ -62,13 +66,9 @@ function App() {
                   id="label"
                   freeSolo
                   options={top100Films.map((option) => option.label)}
+                  value={value}
                   onChange={onChange}
                   onBlur={onChange}
-                  value={value}
-                  onSelect={() => {
-                    console.warn("ASD");
-                    setValue("year", 1111);
-                  }}
                   sx={{ marginBottom: 2 }}
                   renderInput={(params) => (
                     <TextField
@@ -95,9 +95,10 @@ function App() {
                   id="year"
                   freeSolo
                   options={top100Films.map((option) => option.year)}
+                  value={value}
                   onChange={onChange}
                   onBlur={onChange}
-                  value={value}
+                  sx={{ marginBottom: 2 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
