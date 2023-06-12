@@ -36,6 +36,7 @@ function App() {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     mode: "onChange",
@@ -44,20 +45,18 @@ function App() {
 
   const onSubmit = (data: any) => {
     // Autofill Data and Validate it !
-    console.log(data);
+    console.warn("SUMIT");
   };
 
   return (
     <>
       <Stack spacing={2} sx={{ width: 300 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Movie */}
           <Controller
             name="label"
             control={control}
             render={({ field: { value, onChange, ref } }) => {
-              console.log(value);
-              console.log(onChange);
-              console.log(errors);
               return (
                 <Autocomplete
                   id="label"
@@ -65,14 +64,48 @@ function App() {
                   options={top100Films.map((option) => option.label)}
                   onChange={onChange}
                   onBlur={onChange}
+                  value={value}
+                  onSelect={() => {
+                    console.warn("ASD");
+                    setValue("year", 1111);
+                  }}
+                  sx={{ marginBottom: 2 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       value={value}
                       label="Movie"
-                      inputRef={ref}
                       error={!!errors.label}
                       helperText={errors.label?.message}
+                      inputRef={ref}
+                    />
+                  )}
+                />
+              );
+            }}
+          />
+
+          {/* Movie 2 */}
+          <Controller
+            name="year"
+            control={control}
+            render={({ field: { value, onChange, ref } }) => {
+              return (
+                <Autocomplete
+                  id="year"
+                  freeSolo
+                  options={top100Films.map((option) => option.year)}
+                  onChange={onChange}
+                  onBlur={onChange}
+                  value={value}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      value={value}
+                      label="Year"
+                      error={!!errors.year}
+                      helperText={errors.year?.message}
+                      inputRef={ref}
                     />
                   )}
                 />
