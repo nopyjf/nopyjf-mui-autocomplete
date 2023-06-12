@@ -1,8 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
 import "./App.css";
-import { Autocomplete, Stack, TextField } from "@mui/material";
+import { Autocomplete, InputAdornment, Stack, TextField } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType, number, object, string } from "yup";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 interface ITopFilm {
   label: string;
@@ -38,6 +39,7 @@ function App() {
     handleSubmit,
     setValue,
     formState: { errors },
+    getValues,
   } = useForm<FormData>({
     mode: "onChange",
     resolver: yupResolver(schema),
@@ -55,29 +57,49 @@ function App() {
   return (
     <>
       <Stack spacing={2} sx={{ width: 300 }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit, (error) => {
+            console.log(error);
+            console.log(getValues());
+          })}
+        >
           {/* Movie */}
           <Controller
             name="label"
             control={control}
+            // onChange={([_, data]) => {
+            //   return data;
+            // }}
             render={({ field: { value, onChange, ref } }) => {
+              console.log(value);
               return (
                 <Autocomplete
                   id="label"
                   freeSolo
                   options={top100Films.map((option) => option.label)}
+                  // onChange={(_, value) => {
+                  //   onChange(value);
+                  //   console.log(value);
+                  //   setValue("year", "19989");
+                  // }}
                   value={value}
-                  onChange={onChange}
                   onBlur={onChange}
                   sx={{ marginBottom: 2 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      value={value}
                       label="Movie"
                       error={!!errors.label}
                       helperText={errors.label?.message}
                       inputRef={ref}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {" "}
+                            <ArrowDropDownIcon />{" "}
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   )}
                 />
@@ -95,14 +117,18 @@ function App() {
                   id="year"
                   freeSolo
                   options={top100Films.map((option) => option.year)}
-                  value={value}
+                  // onChange={(_, value) => {
+                  //   onChange(value);
+                  //   console.log(value);
+                  //   // setValue("year", "19989");
+                  // }}
                   onChange={onChange}
                   onBlur={onChange}
+                  value={value}
                   sx={{ marginBottom: 2 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      value={value}
                       label="Year"
                       error={!!errors.year}
                       helperText={errors.year?.message}
@@ -113,6 +139,8 @@ function App() {
               );
             }}
           />
+
+          <input type="submit" />
         </form>
       </Stack>
     </>
